@@ -3,9 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: digit-svd-control-data-pvc
 spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: replicated-storage-class
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
   resources:
     requests:
       storage: 20Gi
