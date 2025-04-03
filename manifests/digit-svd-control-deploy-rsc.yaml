@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: digit-svd-control-data-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: replicated-storage-class
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: digit-svd-control-service
+spec:
+  selector:
+    app: digit-svd-control
+  ports:
+    - protocol: UDP
+      port: 11000
+      targetPort: 11000
+      
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: digit-svd-control-config
+data:
+  config.json: |
+    {
+      "appAddr": "http://172.21.100.41:8080/pros",
+      "appUser": "rest1",
+      "appPswd": "rest1",
+      "socket": "11000",
+      "Repository": {
+        "user": "",
+        "password": "",
+        "files": "",
+        "docker": "",
+        "versions": ""
+      },
+      "Default": {
+        "debugLevel": 9,
+        "mainLoopDelay": 5,
+        "sessionDelayBegin": 1,
+        "sessionDelayExit": 5,
+        "sessionSyncPeriod": 10,
+        "sessionSafeKeeping": 60,
+        "sessionLifeTime": 60
+      },
+      "SVD": [
+        {
+          "code": "simple",
+          "image": "85.141.97.224:443/svd_simple:4.5.2.0",
+          "socket": "10101"
+        }
+      ]
+    }
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-svd-control-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-svd-control
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: digit-svd-control
+    spec:
+      imagePullSecrets:
+        - name: digit-dgepu-secret
+      containers:
+      - name: digit-svd-control
+        image: 85.141.97.224:443/svd_control:kuber
+        # imagePullPolicy: Always
+        ports:
+        - containerPort: 11000
+          protocol: UDP
+        env:
+        - name: TZ
+          value: "Europe/Moscow"
+        volumeMounts:
+          - name: digit-svd-control-data-rsc
+            mountPath: /svd/host
+          - name: config-volume
+            mountPath: /svd/host/config.json   # Монтируем `config.json` непосредственно в `/svd/host`
+            subPath: config.json               # Монтируем только файл `config.json`
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "exit 0"  # Всегда возвращает успешный статус (код 0)
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - "exit 0"  # Всегда возвращает успешный статус (код 0)
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: digit-svd-control-data-rsc
+        persistentVolumeClaim:
+          claimName: digit-svd-control-data-pvc
+      - name: config-volume
+        configMap:
+          name: digit-svd-control-config
