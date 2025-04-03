@@ -23,7 +23,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: digit-postgres-exporter
-  namespace: default
+  # namespace: default
 spec:
   replicas: 1
   selector:
