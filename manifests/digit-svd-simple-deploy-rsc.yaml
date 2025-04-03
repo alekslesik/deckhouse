@@ -75,22 +75,22 @@ spec:
         volumeMounts:
           - name: digit-svd-simple-data-rsc
             mountPath: /svd/host
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - "exit 0"  # Всегда возвращает успешный статус (код 0)
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - "exit 0"  # Всегда возвращает успешный статус (код 0)
-          initialDelaySeconds: 5
-          periodSeconds: 10
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #     - /bin/sh
+        #     - -c
+        #     - "exit 0"  # Всегда возвращает успешный статус (код 0)
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #     - /bin/sh
+        #     - -c
+        #     - "exit 0"  # Всегда возвращает успешный статус (код 0)
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
       volumes:
       - name: digit-svd-simple-data-rsc
         persistentVolumeClaim:
