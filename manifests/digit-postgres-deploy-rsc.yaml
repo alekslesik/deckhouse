@@ -3,12 +3,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: digit-postgres-pvc-10
 spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: "replicated-storage-class"
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
   resources:
     requests:
-      storage: 10Gi
+      storage: 20Gi
 
 ---
 
