@@ -97,22 +97,22 @@ spec:
           - name: config-volume
             mountPath: /svd/host/config.json   # Монтируем `config.json` непосредственно в `/svd/host`
             subPath: config.json               # Монтируем только файл `config.json`
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - "exit 0"  # Всегда возвращает успешный статус (код 0)
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - "exit 0"  # Всегда возвращает успешный статус (код 0)
-          initialDelaySeconds: 5
-          periodSeconds: 10
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #     - /bin/sh
+        #     - -c
+        #     - "exit 0"  # Всегда возвращает успешный статус (код 0)
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #     - /bin/sh
+        #     - -c
+        #     - "exit 0"  # Всегда возвращает успешный статус (код 0)
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
       volumes:
       - name: digit-svd-control-data-rsc
         persistentVolumeClaim:
