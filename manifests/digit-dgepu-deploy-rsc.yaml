@@ -32,7 +32,7 @@ spec:
       paths:
       - backend:
           service:
-            name: dgepu-server
+            name: digit-dgepu-service
             port:
               number: 80
         path: /
