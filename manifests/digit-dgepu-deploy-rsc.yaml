@@ -15,13 +15,26 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-dgepu-data-pvc
+  name: digit-dgepu-data-localpath-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
   resources:
     requests:
       storage: 20Gi
+      
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: digit-dgepu-config-localpath-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
+  resources:
+    requests:
+      storage: 1Gi
       
 ---
 
@@ -422,7 +435,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /config
-        - name: digit-dgepu-data-localpath-rsc
+        - name: digit-dgepu-config-localpath
           mountPath: /opt/app_home
       containers:
       - name: digit-dgepu
@@ -447,7 +460,7 @@ spec:
         - name: POSTGRES_HOST
           value: "digit-postgres-headless"
         volumeMounts:
-        - name: digit-dgepu-data-localpath-rsc
+        - name: digit-dgepu-config-localpath
           mountPath: /opt/app_home
         - name: digit-dgepu-data-localpath
           mountPath: /var/lib/dgepu/data
@@ -470,10 +483,10 @@ spec:
           name: dgepu-config
       - name: digit-dgepu-data-localpath
         persistentVolumeClaim:
-          claimName: digit-dgepu-data-pvc
-      - name: digit-dgepu-data-localpath-rsc
+          claimName: digit-dgepu-data-localpath-pvc
+      - name: digit-dgepu-config-localpath
         persistentVolumeClaim:
-          claimName: digit-dgepu-data-localpath-rsc-pvc
+          claimName: digit-dgepu-config-localpath-pvc
 
 ---
 
