@@ -23,6 +23,4 @@ spec:
   sessionAffinity: None
   type: LoadBalancer
 status:
-  loadBalancer:
-    ingress:
-    - ip: 172.21.100.41
+  loadBalancer: {}

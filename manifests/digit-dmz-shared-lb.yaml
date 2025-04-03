@@ -19,6 +19,4 @@ spec:
       targetPort: 10102           # Внутренний порт второго контейнера
       protocol: TCP
 status:
-  loadBalancer:
-    ingress:
-      - ip: 172.21.100.57         # Сохраняем текущий внешний IP
+  loadBalancer: {}
