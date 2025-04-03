@@ -409,7 +409,7 @@ spec:
         volumeMounts:
         - name: config-volume
           mountPath: /config
-        - name: digit-dgepu-data-rsc
+        - name: digit-dgepu-data-localpath-rsc
           mountPath: /opt/app_home
       containers:
       - name: digit-dgepu
@@ -437,7 +437,7 @@ spec:
         - name: POSTGRES_HOST
           value: "digit-postgres-headless"
         volumeMounts:
-        - name: digit-dgepu-data-rsc
+        - name: digit-dgepu-data-localpath-rsc
           mountPath: /opt/app_home\
         - name: digit-dgepu-data-localpath
           mountPath: /var/lib/dgepu/data
@@ -472,6 +472,14 @@ spec:
       resources: 
         requests: 
           storage: 20Gi
+  - metadata: 
+      name: digit-dgepu-data-localpath-rsc
+    spec: 
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: localpath
+      resources: 
+        requests: 
+          storage: 1Gi
 
 ---
 
