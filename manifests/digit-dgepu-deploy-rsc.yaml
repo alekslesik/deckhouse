@@ -19,11 +19,7 @@ metadata:
   name: digit-dgepu-ingress
   namespace: digit
   annotations:
-    cert-manager.io/cluster-issuer: selfsigned
     kubernetes.io/ingress.class: nginx
-    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
-    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   rules:
@@ -32,15 +28,11 @@ spec:
       paths:
       - backend:
           service:
-            name: digit-dgepu-service
+            name: dgepu-server
             port:
               number: 80
         path: /
         pathType: Prefix
-  # tls:
-  # - hosts:
-  #   - argocd.172-21-100-25.sslip.io
-  #   secretName: argocd-tls
 
 ---
 
