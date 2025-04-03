@@ -414,7 +414,6 @@ spec:
       containers:
       - name: digit-dgepu
         image: 85.141.97.224:443/digit_dgepu:load
-        # imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
@@ -428,8 +427,6 @@ spec:
           value: "-Xmx20000m"
         - name: JAR
           value: "dgepu.jar"
-        # - name: GC_OPTS
-        #   value: "-XX:ParallelGCThreads=4 -XX:InitiatingHeapOccupancyPercent=70"
         - name: TZ
           value: "Europe/Moscow"
         - name: CASSANDRA_HOST
@@ -438,7 +435,7 @@ spec:
           value: "digit-postgres-headless"
         volumeMounts:
         - name: digit-dgepu-data-localpath-rsc
-          mountPath: /opt/app_home\
+          mountPath: /opt/app_home
         - name: digit-dgepu-data-localpath
           mountPath: /var/lib/dgepu/data
           subPath: data
@@ -454,8 +451,6 @@ spec:
             port: 8080
           initialDelaySeconds: 30
           periodSeconds: 30
-      # nodeSelector:
-      #   kubernetes.io/hostname: srv24
       volumes:
       - name: config-volume
         configMap:
@@ -463,23 +458,9 @@ spec:
       - name: digit-dgepu-data-localpath
         persistentVolumeClaim:
           claimName: digit-dgepu-data-pvc
-  volumeClaimTemplates: 
-  - metadata: 
-      name: digit-dgepu-data-localpath
-    spec: 
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: localpath
-      resources: 
-        requests: 
-          storage: 20Gi
-  - metadata: 
-      name: digit-dgepu-data-localpath-rsc
-    spec: 
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: localpath
-      resources: 
-        requests: 
-          storage: 1Gi
+      - name: digit-dgepu-data-localpath-rsc
+        persistentVolumeClaim:
+          claimName: digit-dgepu-data-localpath-rsc-pvc
 
 ---
 
