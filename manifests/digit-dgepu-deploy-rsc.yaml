@@ -463,6 +463,15 @@ spec:
       - name: digit-dgepu-data-localpath
         persistentVolumeClaim:
           claimName: digit-dgepu-data-pvc
+  volumeClaimTemplates: 
+  - metadata: 
+      name: digit-dgepu-data-localpath
+    spec: 
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: localpath
+      resources: 
+        requests: 
+          storage: 20Gi
 
 ---
 
