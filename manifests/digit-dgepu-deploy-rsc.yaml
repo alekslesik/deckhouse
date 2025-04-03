@@ -27,7 +27,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: dgepu.172-21-100-23.sslip.io
+  - host: dgepu.172-21-100-25.sslip.io
     http:
       paths:
       - backend:
