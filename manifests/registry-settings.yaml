@@ -4,8 +4,10 @@
 apiVersion: deckhouse.io/v1alpha1
 kind: NodeGroupConfiguration
 metadata:
-  name: setup-private-registry.yaml
+  name: registry-settings.yaml
 spec:
+  bundles:
+    - '*'
   nodeGroups:
     - master
   weight: 50
