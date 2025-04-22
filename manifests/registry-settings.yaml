@@ -1,0 +1,22 @@
+# Настройка containerd для приватного регистри
+# kubectl get nodegroups
+
+apiVersion: deckhouse.io/v1alpha1
+kind: NodeGroupConfiguration
+metadata:
+  name: setup-private-registry.yaml
+spec:
+  nodeGroups:
+    - master
+  weight: 50
+  content: |
+    [plugins]
+      [plugins."io.containerd.grpc.v1.cri".registry]
+        [plugins."io.containerd.grpc.v1.cri".registry.mirrors]
+          [plugins."io.containerd.grpc.v1.cri".registry.mirrors."85.141.97.224:443"]
+            endpoint = ["http://85.141.97.224:443"]
+        [plugins."io.containerd.grpc.v1.cri".registry.configs]
+          [plugins."io.containerd.grpc.v1.cri".registry.configs."85.141.97.224:443".tls]
+            insecure_skip_verify = true
+            
+# cat /etc/containerd/conf.d/clientregistry.toml
