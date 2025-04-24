@@ -463,6 +463,7 @@ spec:
       containers:
       - name: digit-dgepu
         image: 85.141.97.224:443/digit_dgepu:load
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
