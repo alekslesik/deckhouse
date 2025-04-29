@@ -32,9 +32,9 @@ metadata:
 data:
   config.json: |
     {
-      "appAddr": "http://172.21.100.41:8080/pros",
-      "appUser": "rest1",
-      "appPswd": "rest1",
+      "appAddr": "http://dgepu.172-21-100-22.sslip.io/pros/",
+      "appUser": "rest",
+      "appPswd": "rest",
       "socket": "11000",
       "Repository": {
         "user": "",
