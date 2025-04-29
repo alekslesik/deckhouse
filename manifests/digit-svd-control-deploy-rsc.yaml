@@ -32,7 +32,7 @@ metadata:
 data:
   config.json: |
     {
-      "appAddr": "http://172.21.100.57/pros/",
+      "appAddr": "http://172.21.100.57/pros",
       "appUser": "rest",
       "appPswd": "rest",
       "socket": "11000",
