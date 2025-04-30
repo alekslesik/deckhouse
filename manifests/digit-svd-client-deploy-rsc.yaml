@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-svd-client-deployment
+spec:
+  imagePullSecrets:
+          - name: digit-dgepu-secret
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-svd-client
+  template:
+    metadata:
+      labels:
+        app: digit-svd-client
+    spec:
+      containers:
+      - name: digit-svd-client
+        image: 85.141.97.224:443/svd_client:kuber
+        imagePullPolicy: Always
+        env:
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: SVD_CL_NAME
+          value: "SIMPLE:0001"
+        - name: SVD_CL_SERV
+          value: "digit-svd-simple-service:10101"
+        - name: SVD_CL_SZ
+          value: "30"
+        - name: SVD_CL_DELAY
+          value: "10"
+    # nodeSelector:
+    #    kubernetes.io/hostname: srv22
+      imagePullSecrets:
+      - name: digit-dgepu-secret
