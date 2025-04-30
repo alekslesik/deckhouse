@@ -24,7 +24,7 @@ spec:
         - name: SVD_CL_NAME
           value: "SIMPLE:0001"
         - name: SVD_CL_SERV
-          value: "digit-svd-simple-service:10101"
+          value: "digit-dmz-shared-lb:10101"
         - name: SVD_CL_SZ
           value: "30"
         - name: SVD_CL_DELAY
