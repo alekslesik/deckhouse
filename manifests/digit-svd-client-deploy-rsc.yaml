@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: digit-svd-client
-        image: 85.141.97.224:443/svd_client:kuber
+        image: 85.141.97.224:443/svd_client:4.2k
         imagePullPolicy: Always
         env:
         - name: TZ
