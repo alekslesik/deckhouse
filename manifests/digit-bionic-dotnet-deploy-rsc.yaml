@@ -22,11 +22,9 @@ spec:
     - protocol: TCP
       port: 30051
       targetPort: 30051
-      nodePort: 30051  # Для доступа снаружи кластера
     - protocol: TCP
       port: 6002
       targetPort: 6002
-      nodePort: 6002   # Для доступа снаружи кластера
   type: NodePort
 
 ---
