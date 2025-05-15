@@ -1,0 +1,94 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: digit-bionic-dotnet-data-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
+  resources:
+    requests:
+      storage: 20Gi
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: digit-bionic-dotnet-service
+spec:
+  selector:
+    app: digit-bionic-dotnet
+  ports:
+    - protocol: TCP
+      port: 30051
+      targetPort: 30051
+      nodePort: 30051  # Для доступа снаружи кластера
+    - protocol: TCP
+      port: 6002
+      targetPort: 6002
+      nodePort: 6002   # Для доступа снаружи кластера
+  type: NodePort
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-bionic-dotnet-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-bionic-dotnet
+  strategy:
+    type: Recreate  # Важно для приложений с состоянием (stateful)
+  template:
+    metadata:
+      labels:
+        app: digit-bionic-dotnet
+    spec:
+      imagePullSecrets:
+        - name: digit-dgepu-secret  # Если образ в приватном репозитории
+      containers:
+      - name: digit-bionic-dotnet
+        image: bionic:dotnet  # Замените на ваш образ
+        command: ["wine", "/app/MoscadProxy.exe"]
+        ports:
+        - containerPort: 30051
+          protocol: TCP
+        - containerPort: 6002
+          protocol: TCP
+        env:
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: WINEDEBUG
+          value: "fixme-all,err-all"
+        - name: WINEPREFIX
+          value: "/root/net"
+        - name: WINEARCH
+          value: "win64"
+        volumeMounts:
+        - name: digit-bionic-dotnet-data
+          mountPath: /app
+        livenessProbe:  # Раскомментируйте, если нужна проверка работоспособности
+          exec:
+            command: ["pgrep", "wine"]  # Проверяет, работает ли процесс wine
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        # startupProbe:
+        #   exec:
+        #     command:
+        #       - /bin/sh
+        #       - -c
+        #       - "wine /app/MoscadProxy.exe --check-startup"  # Замените на реальную команду проверки
+        #   failureThreshold: 30  # Проверять 30 раз (30 * 10 сек = 5 минут)
+        #   periodSeconds: 10    # Интервал между проверками
+        # Проверка работоспособности (livenessProbe)
+        # resources:  # Раскомментируйте для ограничений CPU/RAM
+        #   limits:
+        #     cpu: "1"
+        #     memory: "1Gi"
+      volumes:
+      - name: digit-bionic-dotnet-data
+        persistentVolumeClaim:
+          claimName: digit-bionic-dotnet-data-pvc
