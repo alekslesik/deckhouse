@@ -19,10 +19,12 @@ spec:
   selector:
     app: digit-bionic-dotnet
   ports:
-    - protocol: TCP
+    - name: port30051
+      protocol: TCP
       port: 30051
       targetPort: 30051
-    - protocol: TCP
+    - name: port6002
+      protocol: TCP
       port: 6002
       targetPort: 6002
 
