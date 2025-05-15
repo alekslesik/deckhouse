@@ -25,7 +25,6 @@ spec:
     - protocol: TCP
       port: 6002
       targetPort: 6002
-  type: NodePort
 
 ---
 
