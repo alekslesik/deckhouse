@@ -33,6 +33,8 @@ spec:
         app: digit-mps
     spec:
       hostNetwork: true
+      imagePullSecrets:
+        - name: digit-dgepu-secret
       containers:
       - name: digit-mps
         image: 85.141.97.224:443/mps:4.0.1
