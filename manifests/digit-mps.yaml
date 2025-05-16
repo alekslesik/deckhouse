@@ -30,15 +30,19 @@ spec:
       labels:
         app: digit-mps
     spec:
-      hostNetwork: true
+      # hostNetwork: true
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
       - name: digit-mps
+        namespace: digit
         image: 85.141.97.224:443/mps:4.0.1
         imagePullPolicy: Always
         command: ["./mps"]
         workingDir: /svd
+        ports:
+        - containerPort: 11111
+          protocol: UDP
         env:
         - name: TZ
           value: "Europe/Moscow"
