@@ -8,8 +8,6 @@ data:
       "Code": "mod1",
       "Port": "11111",
       "MP": [
-        {"type": "d01", "device": "/dev/ttyUSB0", "baudRate": 9600, "initStr": "ATZE0"},
-        {"type": "mx2", "device": "192.168.1.1:4001", "baudRate": 9600, "initStr": "ATZE0"},
         {"type": "mx2", "device": "192.168.1.1:4002", "baudRate": 9600, "initStr": "ATZE0"}
       ]
     }
