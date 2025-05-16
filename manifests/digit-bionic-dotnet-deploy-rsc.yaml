@@ -40,7 +40,7 @@ spec:
     matchLabels:
       app: digit-bionic-dotnet
   strategy:
-    type: Recreate  # Важно для приложений с состоянием (stateful)
+    type: Recreate
   template:
     metadata:
       labels:
