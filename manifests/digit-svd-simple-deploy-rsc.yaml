@@ -39,8 +39,8 @@ spec:
         ports:
         - containerPort: 10101
         env:
-        # - name: SVDCode
-        #   value: "simple"
+        - name: SVDCode
+          value: "simple"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         # - name: SVDSocket
