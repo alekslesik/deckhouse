@@ -43,8 +43,8 @@ spec:
           value: "simple"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
-        - name: SVDSocket
-          value: "10101"
+        # - name: SVDSocket
+        #   value: "10101"
         # - name: EXCHANGE
         #   value: "rest:rest@http://digit-dgepu-service.default.svc.cluster.local/pros"
         - name: TZ
