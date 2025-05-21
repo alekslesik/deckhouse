@@ -19,7 +19,7 @@ metadata:
 data:
   mqtt_conf.json: |
     {
-      "broker": "mqtt-broker.example.com",
+      "broker": "mqtt-broker.example1.com",
       "port": 1883,
       "username": "user",
       "password": "pass",
