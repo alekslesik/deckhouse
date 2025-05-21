@@ -19,7 +19,27 @@ metadata:
 data:
   opcua.json: |
     {
-      
+      "url": "opc.tcp://192.168.213.10:4511/AxiUaServer",
+      "policy": "auto",
+      "mode": "auto",
+      "certfile": "./host/conf/cert.pem",
+      "keyfile": "./host/conf/key.pem",
+      "gencert": false,
+      "appuri": "urn:gopcua:client",
+      "auth": "Anonymous",
+      "user": "",
+      "password": "",
+      "dialTimeout": 0,
+      "sessionTimeout": 1200000,
+      "requestTimeout": 10000,
+      "numValues": 0,
+      "submode": "",
+      "subscribeInterval": 1500,
+      "subscribeon": false,
+      "modetags": 2,
+      "debug": false,
+      "subscriptionLastTime": "",
+      "subscriptionPrevTime": ""
     }
 
 ---
