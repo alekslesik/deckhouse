@@ -69,7 +69,7 @@ spec:
       initContainers:
       - name: copy-config
         image: busybox
-        command: ['sh', '-c', 'mkdir -p /svd/host/conf && cp /svd/conf/opcua_conf.json /svd/host/conf/']
+        command: ['sh', '-c', 'mkdir -p /svd/host/conf && cp /svd/conf/opcua.json /svd/host/conf/']
         volumeMounts:
           - name: opcua-config
             mountPath: /svd/conf
