@@ -48,18 +48,15 @@ data:
       "SVD": [
         {
           "code": "simple",
-          "image": "85.141.97.224:443/svd_simple:4.5.2.0",
-          "socket": "10101"
+          "image": "85.141.97.224:443/svd_simple:4.5.2.0"
         },
         {
           "code": "mqtt",
-          "image": "85.141.97.224:443/svd_simple:4.5.2.0",
-          "socket": "10102"
+          "image": "85.141.97.224:443/svd_simple:4.5.2.0"
         },
         {
           "code": "opcua",
-          "image": "85.141.97.224:443/svd_simple:4.5.2.0",
-          "socket": "10103"
+          "image": "85.141.97.224:443/svd_simple:4.5.2.0"
         }
       ]
     }
