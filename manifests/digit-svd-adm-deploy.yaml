@@ -34,6 +34,7 @@ spec:
         - name: digit-dgepu-secret
       containers:
       - name: adm
+        namespace: digit
         image: 85.141.97.224:443/svd_adm:4.8.2.0k
         imagePullPolicy: Always
         ports:
