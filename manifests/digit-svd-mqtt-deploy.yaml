@@ -67,7 +67,7 @@ spec:
       - name: mqtt
         namespace: digit
         image: 85.141.97.224:443/svd_mqtt_neo:4.8.2.7k
-        imagePullPolicy: Always
+        # imagePullPolicy: Always
         ports:
         - containerPort: 10102 
         env:

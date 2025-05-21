@@ -36,12 +36,12 @@ spec:
       - name: spg740
         namespace: digit
         image: 85.141.97.224:443/svd_csd_spg740_m4:4.8.2.0.9k
-        imagePullPolicy: Always
+        # imagePullPolicy: Always
         ports:
         - containerPort: 10110
         env:
         - name: SVDCode
-          value: "spg740"
+          value: "csd_spg740"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ

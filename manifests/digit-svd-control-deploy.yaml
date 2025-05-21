@@ -92,7 +92,7 @@ data:
           "socket": "10109"
         },
         {
-          "code": "spg740",
+          "code": "csd_spg740",
           "image": "85.141.97.224:443/svd_asumontazh:4.5.2.0",
           "socket": "10110"
         }
@@ -122,7 +122,7 @@ spec:
       containers:
       - name: digit-svd-control
         image: 85.141.97.224:443/svd_control:4.8k
-        imagePullPolicy: Always
+        # imagePullPolicy: Always
         ports:
         - containerPort: 11000
           protocol: UDP

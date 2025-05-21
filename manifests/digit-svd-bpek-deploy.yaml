@@ -36,7 +36,7 @@ spec:
       - name: bpekck
         namespace: digit
         image: 85.141.97.224:443/svd_bpekck:4.8.0.0k
-        imagePullPolicy: Always
+        # imagePullPolicy: Always
         ports:
         - containerPort: 10109
         env:

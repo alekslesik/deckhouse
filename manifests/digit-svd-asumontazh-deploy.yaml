@@ -36,7 +36,7 @@ spec:
       - name: asumontazh
         namespace: digit
         image: 85.141.97.224:443/svd_asumontazh:4.8.2.1k
-        imagePullPolicy: Always
+        # imagePullPolicy: Always
         ports:
         - containerPort: 10107
         env:
