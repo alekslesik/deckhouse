@@ -54,6 +54,15 @@ spec:
       serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
       imagePullSecrets:
         - name: digit-dgepu-secret
+      initContainers:
+      - name: create-symlink
+        image: busybox
+        command: ['sh', '-c', 'mkdir -p /svd/host/conf && ln -s /svd/conf/mqtt_conf.json /svd/host/conf/mqtt_conf.json']
+        volumeMounts:
+          - name: mqtt-config
+            mountPath: /svd/conf
+          - name: digit-svd-mqtt-data-rsc
+            mountPath: /svd/host
       containers:
       - name: mqtt
         namespace: digit
@@ -76,8 +85,7 @@ spec:
           - name: digit-svd-mqtt-data-rsc
             mountPath: /svd/host
           - name: mqtt-config
-            mountPath: /svd/host/conf/mqtt_conf.json
-            subPath: mqtt_conf.json
+            mountPath: /svd/conf
       volumes:
       - name: digit-svd-mqtt-data-rsc
         persistentVolumeClaim:
