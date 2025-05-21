@@ -76,7 +76,7 @@ spec:
           - name: digit-svd-mqtt-data-rsc
             mountPath: /svd/host
           - name: mqtt-config
-            mountPath: /svd/conf/mqtt_conf.json
+            mountPath: /svd/host/conf/mqtt_conf.json
             subPath: mqtt_conf.json
       volumes:
       - name: digit-svd-mqtt-data-rsc
