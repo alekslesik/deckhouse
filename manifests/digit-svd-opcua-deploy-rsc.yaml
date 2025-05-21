@@ -68,7 +68,7 @@ spec:
         - name: digit-dgepu-secret
       initContainers:
       - name: copy-config
-        image: busybox
+        image: 85.141.97.224:443/busybox:latest
         command: ['sh', '-c', 'mkdir -p /svd/host/conf && cp /svd/conf/opcua.json /svd/host/conf/']
         volumeMounts:
           - name: opcua-config
