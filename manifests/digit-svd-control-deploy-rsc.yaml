@@ -36,13 +36,6 @@ data:
       "appUser": "rest",
       "appPswd": "rest",
       "socket": "11000",
-      "Repository": {
-        "user": "",
-        "password": "",
-        "files": "",
-        "docker": "",
-        "versions": ""
-      },
       "Default": {
         "debugLevel": 9,
         "mainLoopDelay": 5,
@@ -55,6 +48,7 @@ data:
       "SVD": [
         {
           "code": "simple",
+          "image": "85.141.97.224:443/svd_simple:4.5.2.0",
           "socket": "10101"
         }
       ]
