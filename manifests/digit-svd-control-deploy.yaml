@@ -70,6 +70,11 @@ data:
           "code": "akta",
           "image": "85.141.97.224:443/svd_simple:4.5.2.0",
           "socket": "10105"
+        },
+        {
+          "code": "asduk",
+          "image": "85.141.97.224:443/svd_simple:4.5.2.0",
+          "socket": "10106"
         }
       ]
     }
