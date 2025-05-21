@@ -77,7 +77,7 @@ data:
           "socket": "10106"
         },
         {
-          "code": "asduk",
+          "code": "asumontazh",
           "image": "85.141.97.224:443/svd_asumontazh:4.5.2.0",
           "socket": "10107"
         }
