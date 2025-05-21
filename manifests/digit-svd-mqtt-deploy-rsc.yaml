@@ -55,9 +55,9 @@ spec:
       imagePullSecrets:
         - name: digit-dgepu-secret
       initContainers:
-      - name: create-symlink
+      - name: copy-config
         image: busybox
-        command: ['sh', '-c', 'mkdir -p /svd/host/conf && ln -s /svd/conf/mqtt_conf.json /svd/host/conf/mqtt_conf.json']
+        command: ['sh', '-c', 'mkdir -p /svd/host/conf && cp /svd/conf/mqtt_conf.json /svd/host/conf/']
         volumeMounts:
           - name: mqtt-config
             mountPath: /svd/conf
