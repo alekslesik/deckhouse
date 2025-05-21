@@ -29,7 +29,7 @@ spec:
         app: digit-svd
         component: simple
     spec:
-      serviceAccountName: digit-svd-simple-sa  # Назначаем новый ServiceAccount
+      serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:

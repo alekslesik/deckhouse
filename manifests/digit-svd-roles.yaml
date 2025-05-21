@@ -4,7 +4,7 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: digit-svd-simple-sa
+  name: digit-svd-sa
   namespace: digit  # Укажите namespace, если ваш под работает в другом
 
 ---
@@ -30,7 +30,7 @@ metadata:
   namespace: digit
 subjects:
 - kind: ServiceAccount
-  name: digit-svd-simple-sa
+  name: digit-svd-sa
   namespace: digit
 roleRef:
   kind: Role
