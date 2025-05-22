@@ -1,46 +1,46 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-csd-ultramag-mbrtu-data-pvc
+  name: digit-svd-fw-elster-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Gi
 
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-csd-ultramag-mbrtu-deployment
+  name: digit-svd-fw-elster-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: csd-ultramag-mbrtu
+      component: fw-elster
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: csd-ultramag-mbrtu
+        component: fw-elster
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: csd-ultramag-mbrtu
+      - name: fw-elster
         namespace: digit
-        image: 85.141.97.224:443/svd_csd-ultramag-mbrtu:4.5.2.0
+        image: 85.141.97.224:443/svd_fw_elster:4.8.2.0k
         ports:
-        - containerPort: 10117
+        - containerPort: 10124
         env:
         - name: SVDCode
-          value: "csd_ultramag_mbrtu"
+          value: "fw_elster"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-csd-ultramag-mbrtu-data-rsc
+          - name: digit-svd-fw-elster-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-csd-ultramag-mbrtu-data-rsc
+      - name: digit-svd-fw-elster-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-csd-ultramag-mbrtu-data-pvc
+          claimName: digit-svd-fw-elster-data-pvc

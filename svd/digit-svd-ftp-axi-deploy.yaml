@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-fw-axitech-data-pvc
+  name: digit-svd-ftp-axi-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-fw-axitech-deployment
+  name: digit-svd-ftp-axi-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: fw-axitech
+      component: ftp-axi
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: fw-axitech
+        component: ftp-axi
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: fw-axitech
+      - name: ftp-axi
         namespace: digit
-        image: 85.141.97.224:443/svd_fw-axitech:4.8.2.1k
+        image: 85.141.97.224:443/svd_ftp_axi:4.8.2.1k
         ports:
-        - containerPort: 10123
+        - containerPort: 10122
         env:
         - name: SVDCode
-          value: "fw_axitech"
+          value: "ftp_axi"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-fw-axitech-data-rsc
+          - name: digit-svd-ftp-axi-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-fw-axitech-data-rsc
+      - name: digit-svd-ftp-axi-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-fw-axitech-data-pvc
+          claimName: digit-svd-ftp-axi-data-pvc

@@ -1,0 +1,38 @@
+# ServiceAccount для  пода
+# набор манифестов Kubernetes настраивает ServiceAccount
+# Role и RoleBinding для предоставления ограниченного доступа к ресурсам в кластере
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: digit-svd-sa
+  namespace: digit  # Укажите namespace, если ваш под работает в другом
+
+---
+
+# Роль, разрешающая доступ к подам (только для чтения)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: pod-reader
+  namespace: digit
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list"]
+
+---
+
+# RoleBinding, связывающий ServiceAccount и роль pod-reader
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: pod-reader-binding
+  namespace: digit
+subjects:
+- kind: ServiceAccount
+  name: digit-svd-sa
+  namespace: digit
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
