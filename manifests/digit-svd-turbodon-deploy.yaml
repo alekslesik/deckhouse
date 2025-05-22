@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: digit-svd-turbodon-data-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-svd-turbodon-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-svd
+      component: turbodon
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: digit-svd
+        component: turbodon
+    spec:
+      serviceAccountName: digit-svd-sa
+      imagePullSecrets:
+        - name: digit-dgepu-secret
+      containers:
+      - name: turbodon
+        namespace: digit
+        image: 85.141.97.224:443/svd_turbodon:4.8.2.2k
+        ports:
+        - containerPort: 10152
+        env:
+        - name: SVDCode
+          value: "turbodon"
+        - name: SVDControl
+          value: "digit-svd-control-service:11000"
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+          - name: digit-svd-turbodon-data-rsc
+            mountPath: /svd/host
+      volumes:
+      - name: digit-svd-turbodon-data-rsc
+        persistentVolumeClaim:
+          claimName: digit-svd-turbodon-data-pvc

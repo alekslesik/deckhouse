@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: digit-svd-mirtek-data-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-svd-mirtek-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-svd
+      component: mirtek
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: digit-svd
+        component: mirtek
+    spec:
+      serviceAccountName: digit-svd-sa
+      imagePullSecrets:
+        - name: digit-dgepu-secret
+      containers:
+      - name: mirtek
+        namespace: digit
+        image: 85.141.97.224:443/svd_mirtek:4.8.2.4k
+        ports:
+        - containerPort: 
+        env:
+        - name: SVDCode
+          value: "mirtek"
+        - name: SVDControl
+          value: "digit-svd-control-service:11000"
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+          - name: digit-svd-mirtek-data-rsc
+            mountPath: /svd/host
+      volumes:
+      - name: digit-svd-mirtek-data-rsc
+        persistentVolumeClaim:
+          claimName: digit-svd-mirtek-data-pvc
