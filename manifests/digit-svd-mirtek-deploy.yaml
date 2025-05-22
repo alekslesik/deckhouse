@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-egts-data-pvc
+  name: digit-svd-mirtek-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-egts-deployment
+  name: digit-svd-mirtek-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: egts
+      component: mirtek
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: egts
+        component: mirtek
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: egts
+      - name: mirtek
         namespace: digit
-        image: 85.141.97.224:443/svd_egts:4.8.2.0k
+        image: 85.141.97.224:443/svd_mirtek:4.8.2.4k
         ports:
-        - containerPort: 10119
+        - containerPort: 
         env:
         - name: SVDCode
-          value: "egts"
+          value: "mirtek"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-egts-data-rsc
+          - name: digit-svd-mirtek-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-egts-data-rsc
+      - name: digit-svd-mirtek-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-egts-data-pvc
+          claimName: digit-svd-mirtek-data-pvc

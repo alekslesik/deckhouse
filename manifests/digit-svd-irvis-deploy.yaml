@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-gazdev-data-pvc
+  name: digit-svd-irvis-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-gazdev-deployment
+  name: digit-svd-irvis-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: gazdev
+      component: irvis
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: gazdev
+        component: irvis
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: gazdev
+      - name: irvis
         namespace: digit
-        image: 85.141.97.224:443/svd_gazdev:4.8.3.6k
+        image: 85.141.97.224:443/svd_irvis:4.8.2.2k
         ports:
-        - containerPort: 10126
+        - containerPort: 10130
         env:
         - name: SVDCode
-          value: "gazdev"
+          value: "irvis"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-gazdev-data-rsc
+          - name: digit-svd-irvis-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-gazdev-data-rsc
+      - name: digit-svd-irvis-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-gazdev-data-pvc
+          claimName: digit-svd-irvis-data-pvc

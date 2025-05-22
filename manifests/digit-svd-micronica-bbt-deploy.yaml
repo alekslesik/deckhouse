@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-fmb920-data-pvc
+  name: digit-svd-micronica-bbt-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-fmb920-deployment
+  name: digit-svd-micronica-bbt-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: fmb920
+      component: micronica-bbt
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: fmb920
+        component: micronica-bbt
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: fmb920
+      - name: micronica-bbt
         namespace: digit
-        image: 85.141.97.224:443/svd_fmb920:4.8.2.0k
+        image: 85.141.97.224:443/svd_micronica-bbt:4.8.1.0.1k
         ports:
-        - containerPort: 10121
+        - containerPort: 10135
         env:
         - name: SVDCode
-          value: "fmb920"
+          value: "micronica_bbt"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-fmb920-data-rsc
+          - name: digit-svd-micronica-bbt-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-fmb920-data-rsc
+      - name: digit-svd-micronica-bbt-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-fmb920-data-pvc
+          claimName: digit-svd-micronica-bbt-data-pvc

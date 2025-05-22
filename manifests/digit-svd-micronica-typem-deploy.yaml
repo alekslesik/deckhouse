@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-grsysd-data-pvc
+  name: digit-svd-micronica-typem-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-grsysd-deployment
+  name: digit-svd-micronica-typem-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: grsysd
+      component: micronica-typem
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: grsysd
+        component: micronica-typem
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: grsysd
+      - name: micronica-typem
         namespace: digit
-        image: 85.141.97.224:443/svd_grsysd:4.8.0.0k
+        image: 85.141.97.224:443/svd_micronica-typem:4.8.1.0.1k
         ports:
-        - containerPort: 10127
+        - containerPort: 10137
         env:
         - name: SVDCode
-          value: "grsysd"
+          value: "micronica_typem"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-grsysd-data-rsc
+          - name: digit-svd-micronica-typem-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-grsysd-data-rsc
+      - name: digit-svd-micronica-typem-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-grsysd-data-pvc
+          claimName: digit-svd-micronica-typem-data-pvc
