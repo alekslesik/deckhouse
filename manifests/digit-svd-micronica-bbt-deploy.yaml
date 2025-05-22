@@ -35,7 +35,7 @@ spec:
       containers:
       - name: micronica-bbt
         namespace: digit
-        image: 85.141.97.224:443/svd_micronica-bbt:4.8.1.0.1k
+        image: 85.141.97.224:443/svd_micronica:4.8.1.0.2k
         ports:
         - containerPort: 10135
         env:

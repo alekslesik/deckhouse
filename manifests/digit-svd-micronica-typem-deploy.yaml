@@ -35,7 +35,7 @@ spec:
       containers:
       - name: micronica-typem
         namespace: digit
-        image: 85.141.97.224:443/svd_micronica-typem:4.8.1.0.1k
+        image: 85.141.97.224:443/svd_micronica_typem:4.8.1.0.1k
         ports:
         - containerPort: 10137
         env:

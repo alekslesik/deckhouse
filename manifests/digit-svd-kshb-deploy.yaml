@@ -35,7 +35,7 @@ spec:
       containers:
       - name: kshb
         namespace: digit
-        image: 85.141.97.224:443/svd_kshb:4.5.2.0k
+        image: 85.141.97.224:443/svd_kshb:4.8.2.1k
         ports:
         - containerPort: 10133
         env:
