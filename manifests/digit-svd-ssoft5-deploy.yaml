@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-kshb-data-pvc
+  name: digit-svd-ssoft5-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-kshb-deployment
+  name: digit-svd-ssoft5-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: kshb
+      component: ssoft5
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: kshb
+        component: ssoft5
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: kshb
+      - name: ssoft5
         namespace: digit
-        image: 85.141.97.224:443/svd_kshb:4.8.2.1k
+        image: 85.141.97.224:443/svd_ssoft5:4.8.2.0k
         ports:
-        - containerPort: 10133
+        - containerPort: 10149
         env:
         - name: SVDCode
-          value: "kshb"
+          value: "ssoft5"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-kshb-data-rsc
+          - name: digit-svd-ssoft5-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-kshb-data-rsc
+      - name: digit-svd-ssoft5-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-kshb-data-pvc
+          claimName: digit-svd-ssoft5-data-pvc

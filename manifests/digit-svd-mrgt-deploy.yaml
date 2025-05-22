@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-micronica-data-pvc
+  name: digit-svd-mrgt-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-micronica-deployment
+  name: digit-svd-mrgt-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: micronica
+      component: mrgt
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: micronica
+        component: mrgt
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: micronica
+      - name: mrgt
         namespace: digit
-        image: 85.141.97.224:443/svd_micronica:4.8.1.0.2k
+        image: 85.141.97.224:443/svd_mrgt:4.8.2.2.0k
         ports:
-        - containerPort: 10136
+        - containerPort: 10144
         env:
         - name: SVDCode
-          value: "micronica"
+          value: "mrgt"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-micronica-data-rsc
+          - name: digit-svd-mrgt-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-micronica-data-rsc
+      - name: digit-svd-mrgt-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-micronica-data-pvc
+          claimName: digit-svd-mrgt-data-pvc
