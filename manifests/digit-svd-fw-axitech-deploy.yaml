@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-fw_elster-data-pvc
+  name: digit-svd-fw-axitech-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-fw_elster-deployment
+  name: digit-svd-fw-axitech-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: fw_elster
+      component: fw-axitech
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: fw_elster
+        component: fw-axitech
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: fw_elster
+      - name: fw-axitech
         namespace: digit
-        image: 85.141.97.224:443/svd_fw_elster:4.8.2.0k
+        image: 85.141.97.224:443/svd_fw-axitech:4.8.2.1k
         ports:
-        - containerPort: 10124
+        - containerPort: 10123
         env:
         - name: SVDCode
-          value: "fw_elster"
+          value: "fw_axitech"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-fw_elster-data-rsc
+          - name: digit-svd-fw-axitech-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-fw_elster-data-rsc
+      - name: digit-svd-fw-axitech-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-fw_elster-data-pvc
+          claimName: digit-svd-fw-axitech-data-pvc

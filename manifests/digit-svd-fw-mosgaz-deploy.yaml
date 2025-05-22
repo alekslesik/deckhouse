@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-micronica_typem-data-pvc
+  name: digit-svd-fw-mosgaz-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,33 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-micronica_typem-deployment
+  name: digit-svd-fw-mosgaz-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: micronica_typem
+      component: fw-mosgaz
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: micronica_typem
+        component: fw-mosgaz
     spec:
       serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: micronica_typem
+      - name: fw-mosgaz
         namespace: digit
-        image: 85.141.97.224:443/svd_micronica_typem:4.8.1.0.1k
+        image: 85.141.97.224:443/svd_fw-mosgaz:4.8.1.0k
         ports:
-        - containerPort: 10137
+        - containerPort: 10125
         env:
         - name: SVDCode
-          value: "micronica_typem"
+          value: "fw_mosgaz"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -50,9 +50,9 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-micronica_typem-data-rsc
+          - name: digit-svd-fw-mosgaz-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-micronica_typem-data-rsc
+      - name: digit-svd-fw-mosgaz-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-micronica_typem-data-pvc
+          claimName: digit-svd-fw-mosgaz-data-pvc
