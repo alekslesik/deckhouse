@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-asumontazh-data-pvc
+  name: digit-svd-csd-ultramag-mbrtu-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,34 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-asumontazh-deployment
+  name: digit-svd-csd-ultramag-mbrtu-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: asumontazh
+      component: csd-ultramag-mbrtu
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: asumontazh
+        component: csd-ultramag-mbrtu
     spec:
-      serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
+      serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: asumontazh
+      - name: csd-ultramag-mbrtu
         namespace: digit
-        image: 85.141.97.224:443/svd_asumontazh:4.8.2.1k
-        # imagePullPolicy: Always
+        image: 85.141.97.224:443/svd_csd_ultramag_mbrtu:4.8.2.0.0k
         ports:
-        - containerPort: 10107
+        - containerPort: 10117
         env:
         - name: SVDCode
-          value: "asumontazh"
+          value: "csd_ultramag_mbrtu"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -49,12 +48,11 @@ spec:
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
-              fieldPath: metadata.namespace  # Автоматическое указание текущего namespace
+              fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-asumontazh-data-rsc
+          - name: digit-svd-csd-ultramag-mbrtu-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-asumontazh-data-rsc
+      - name: digit-svd-csd-ultramag-mbrtu-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-asumontazh-data-pvc
-        
+          claimName: digit-svd-csd-ultramag-mbrtu-data-pvc

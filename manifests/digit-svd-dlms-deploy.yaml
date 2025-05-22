@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-axikam-data-pvc
+  name: digit-svd-dlms-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,34 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-axikam-deployment
+  name: digit-svd-dlms-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: axikam
+      component: dlms
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: axikam
+        component: dlms
     spec:
-      serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
+      serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: axikam
+      - name: dlms
         namespace: digit
-        image: 85.141.97.224:443/svd_axikam:4.8.2.1k
-        # imagePullPolicy: Always
+        image: 85.141.97.224:443/svd_dlms:4.8.0.4k
         ports:
-        - containerPort: 10108
+        - containerPort: 10118
         env:
         - name: SVDCode
-          value: "axikam"
+          value: "dlms"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -49,12 +48,11 @@ spec:
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
-              fieldPath: metadata.namespace  # Автоматическое указание текущего namespace
+              fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-axikam-data-rsc
+          - name: digit-svd-dlms-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-axikam-data-rsc
+      - name: digit-svd-dlms-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-axikam-data-pvc
-        
+          claimName: digit-svd-dlms-data-pvc
