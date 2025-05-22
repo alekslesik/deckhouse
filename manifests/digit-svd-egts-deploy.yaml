@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-stel-data-pvc
+  name: digit-svd-egts-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,34 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-stel-deployment
+  name: digit-svd-egts-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: stel
+      component: egts
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: stel
+        component: egts
     spec:
-      serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
+      serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: stel
+      - name: egts
         namespace: digit
-        image: 85.141.97.224:443/svd_csd_stel:4.8.2.0.0.0k
-        # imagePullPolicy: Always
+        image: 85.141.97.224:443/svd_egts:4.8.2.0k
         ports:
-        - containerPort: 10111
+        - containerPort: 10119
         env:
         - name: SVDCode
-          value: "csd_stel"
+          value: "egts"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -49,12 +48,11 @@ spec:
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
-              fieldPath: metadata.namespace  # Автоматическое указание текущего namespace
+              fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-stel-data-rsc
+          - name: digit-svd-egts-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-stel-data-rsc
+      - name: digit-svd-egts-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-stel-data-pvc
-        
+          claimName: digit-svd-egts-data-pvc

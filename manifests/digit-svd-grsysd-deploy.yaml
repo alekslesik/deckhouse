@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-spg740-data-pvc
+  name: digit-svd-grsysd-data-pvc
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -14,34 +14,33 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: digit-svd-spg740-deployment
+  name: digit-svd-grsysd-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: digit-svd
-      component: spg740
+      component: grsysd
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: digit-svd
-        component: spg740
+        component: grsysd
     spec:
-      serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
+      serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
-      - name: spg740
+      - name: grsysd
         namespace: digit
-        image: 85.141.97.224:443/svd_csd_spg740_m4:4.8.2.0.9k
-        # imagePullPolicy: Always
+        image: 85.141.97.224:443/svd_grsysd:4.8.0.0k
         ports:
-        - containerPort: 10110
+        - containerPort: 10127
         env:
         - name: SVDCode
-          value: "csd_spg740"
+          value: "grsysd"
         - name: SVDControl
           value: "digit-svd-control-service:11000"
         - name: TZ
@@ -49,12 +48,11 @@ spec:
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
-              fieldPath: metadata.namespace  # Автоматическое указание текущего namespace
+              fieldPath: metadata.namespace
         volumeMounts:
-          - name: digit-svd-spg740-data-rsc
+          - name: digit-svd-grsysd-data-rsc
             mountPath: /svd/host
       volumes:
-      - name: digit-svd-spg740-data-rsc
+      - name: digit-svd-grsysd-data-rsc
         persistentVolumeClaim:
-          claimName: digit-svd-spg740-data-pvc
-        
+          claimName: digit-svd-grsysd-data-pvc
