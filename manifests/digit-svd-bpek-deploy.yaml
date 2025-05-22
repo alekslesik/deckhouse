@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: digit-svd-bpekck-data-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-svd-bpekck-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-svd
+      component: bpekck
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: digit-svd
+        component: bpekck
+    spec:
+      serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
+      imagePullSecrets:
+        - name: digit-dgepu-secret
+      containers:
+      - name: bpekck
+        namespace: digit
+        image: 85.141.97.224:443/svd_bpekck:4.8.0.0k
+        # imagePullPolicy: Always
+        ports:
+        - containerPort: 10109
+        env:
+        - name: SVDCode
+          value: "bpekck"
+        - name: SVDControl
+          value: "digit-svd-control-service:11000"
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace  # Автоматическое указание текущего namespace
+        volumeMounts:
+          - name: digit-svd-bpekck-data-rsc
+            mountPath: /svd/host
+      volumes:
+      - name: digit-svd-bpekck-data-rsc
+        persistentVolumeClaim:
+          claimName: digit-svd-bpekck-data-pvc
+        
