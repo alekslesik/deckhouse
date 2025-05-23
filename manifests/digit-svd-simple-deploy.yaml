@@ -34,7 +34,7 @@ spec:
         - name: digit-dgepu-secret
       containers:
       - name: simple
-        namespace: digit
+        # namespace: digit
         image: 85.141.97.224:443/svd_simple:4.8.4.2k
         # imagePullPolicy: Always
         ports:
