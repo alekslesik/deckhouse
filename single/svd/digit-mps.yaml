@@ -1,0 +1,88 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: digit-mps-config
+  namespace: digit
+data:
+  mps.json: |
+    {
+      "Code": "mod1",
+      "Port": "11111",
+      "MP": [
+        {"type": "mx2", "device": "192.168.1.1:4002", "baudRate": 9600, "initStr": "ATZE0"}
+      ]
+    }
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-mps-deployment
+  namespace: digit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-mps
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: digit-mps
+    spec:
+      # hostNetwork: true
+      imagePullSecrets:
+        - name: digit-dgepu-secret
+      containers:
+      - name: digit-mps
+        
+        image: 85.141.97.224:443/mps:4.0.1
+        # imagePullPolicy: Always
+        command: ["./mps"]
+        workingDir: /svd
+        ports:
+        - containerPort: 11111
+          protocol: UDP
+        env:
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: PATH
+          value: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        volumeMounts:
+        - name: mps-config
+          mountPath: /svd/conf/mps.json
+          subPath: mps.json
+        # дать контейнеру доступ к физическому последовательному порту (UART) на хостовой машине    
+        # - name: host-devices
+        #   mountPath: /dev/ttyUSB0
+      volumes:
+      - name: mps-config
+        configMap:
+          name: digit-mps-config
+      # дать контейнеру доступ к физическому последовательному порту (UART) на хостовой машине    
+      # - name: host-devices
+      #   hostPath:
+      #     path: /dev/ttyUSB0
+      #     type: File
+      # Контейнеру могут потребоваться права на чтение/запись устройства /dev/tty*
+      # securityContext:
+      #   runAsUser: 0  # Запуск от root (небезопасно!)
+      #   privileged: true  # Дать полный доступ к устройствам (если нужно)
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: digit-mps-service
+spec:
+  type: ClusterIP
+  selector:
+    app: digit-mps
+  ports:
+    - name: mps-port
+      protocol: UDP
+      port: 11111
+      targetPort: 11111
