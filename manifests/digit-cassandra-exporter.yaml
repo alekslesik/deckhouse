@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: digit-cassandra-exporter
+  namespace: digit
   labels:
     prometheus.deckhouse.io/custom-target: digit-cassandra-exporter
   annotations:
@@ -23,6 +24,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: digit-cassandra-exporter-config
+  namespace: digit
 data:
   config.yml: |
     host: digit-cassandra-service:7199
@@ -88,6 +90,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: digit-cassandra-exporter
+  namespace: digit
   labels:
     app: digit-cassandra-exporter
 spec:
