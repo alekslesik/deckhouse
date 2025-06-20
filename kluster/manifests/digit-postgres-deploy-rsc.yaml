@@ -2,13 +2,14 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: digit-postgres-pvc-10
+  namespace: digit
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: "replicated-storage-class"
   resources:
     requests:
-      storage: 10Gi
+      storage: 100Gi
 
 ---
 
@@ -16,6 +17,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: digit-postgres-headless
+  namespace: digit
 spec:
   selector:
     app: digit-postgres
@@ -30,6 +32,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: init-db-config
+  namespace: digit
 data:
   init-db.sh: |
     #!/bin/bash
@@ -54,6 +57,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: digit-postgres-deployment
+  namespace: digit
 spec:
   replicas: 1
   selector:

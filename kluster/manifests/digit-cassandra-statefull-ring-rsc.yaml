@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: digit-cassandra-service
+  namespace: digit
 spec:
   selector:
     app: digit-cassandra
@@ -19,6 +20,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cassandra-config
+  namespace: digit
 data:
   dc: "DC1"
   rack: "RAC2"
@@ -29,6 +31,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cassandra-config-files
+  namespace: digit
 data:
   cassandra-env.sh: |
     # Licensed to the Apache Software Foundation (ASF) under one
@@ -2999,6 +3002,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: digit-cassandra-statefulset
+  namespace: digit
 spec:
   serviceName: "digit-cassandra-service"
   replicas: 3

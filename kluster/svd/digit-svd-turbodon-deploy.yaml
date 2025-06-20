@@ -1,20 +1,22 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: digit-svd-turbodon-data-pvc
+  name: digit-svd-simple-data-pvc
+  namespace: digit
 spec:
-  accessModes: ["ReadWriteOnce"]
-  storageClassName: localpath
+  accessModes:
+    - ReadWriteMany
+  storageClassName: replicated-storage-class
   resources:
     requests:
-      storage: 1Gi
-
+      storage: 10Gi
 ---
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: digit-svd-turbodon-deployment
+  namespace: digit
 spec:
   replicas: 1
   selector:
@@ -34,7 +36,7 @@ spec:
         - name: digit-dgepu-secret
       containers:
       - name: turbodon
-        namespace: digit
+        
         image: 85.141.97.224:443/svd_turbodon:4.8.2.2k
         ports:
         - containerPort: 10152

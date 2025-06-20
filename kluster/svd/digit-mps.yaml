@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: digit-mps-config
+  namespace: digit
 data:
   mps.json: |
     {
@@ -18,6 +19,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: digit-mps-deployment
+  namespace: digit
 spec:
   replicas: 1
   selector:
@@ -35,7 +37,7 @@ spec:
         - name: digit-dgepu-secret
       containers:
       - name: digit-mps
-        namespace: digit
+        
         image: 85.141.97.224:443/mps:4.0.1
         # imagePullPolicy: Always
         command: ["./mps"]

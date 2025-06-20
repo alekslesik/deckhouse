@@ -2,13 +2,14 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: digit-dgepu-data-pvc
+  namespace: digit
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: replicated-storage-class
   resources:
     requests:
-      storage: 20Gi
+      storage: 50Gi
 
 ---
 
@@ -16,6 +17,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: digit-dgepu-service
+  namespace: digit
   labels:
     prometheus.deckhouse.io/custom-target: digit-dgepu-service
   annotations:
@@ -36,7 +38,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dgepu-config
-  # namespace: digit-svd
+  namespace: digit
 data:
   local.app.properties: |
     #cuba.webHostName=A7D1-WEB-01
@@ -388,6 +390,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: digit-dgepu-deployment
+  namespace: digit
 spec:
   replicas: 1
   selector:

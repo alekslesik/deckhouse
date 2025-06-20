@@ -2,13 +2,14 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: digit-svd-control-data-pvc
+  namespace: digit
 spec:
   accessModes:
     - ReadWriteMany
   storageClassName: replicated-storage-class
   resources:
     requests:
-      storage: 20Gi
+      storage: 50Gi
 
 ---
 
@@ -16,6 +17,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: digit-svd-control-service
+  namespace: digit
 spec:
   selector:
     app: digit-svd-control
@@ -30,6 +32,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: digit-svd-control-config
+  namespace: digit
 data:
   config.json: |
     {
@@ -68,6 +71,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: digit-svd-control-deployment
+  namespace: digit
 spec:
   replicas: 1
   selector:
