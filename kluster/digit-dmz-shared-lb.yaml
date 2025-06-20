@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: digit-dmz-shared-lb
+  annotations:
+    metallb.universe.tf/ip-allocated-from-pool: frontend-pool
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    app: digit-svd                # Выбираем поды по метке app: digit-svd
+  ports:
+    - name: simple-port
+      port: 10101                 # Внешний порт для первого приложения
+      targetPort: 10101           # Внутренний порт первого контейнера
+      protocol: TCP
+    - name: simple1-port
+      port: 10102                 # Внешний порт для второго приложения
+      targetPort: 10102           # Внутренний порт второго контейнера
+      protocol: TCP
+status:
+  loadBalancer:
+    ingress:
+      - ip: 172.21.100.57         # Сохраняем текущий внешний IP

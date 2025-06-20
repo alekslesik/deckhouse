@@ -1,0 +1,107 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: digit-svd-opcua-data-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
+  resources:
+    requests:
+      storage: 20Gi
+
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: digit-svd-opcua-config
+data:
+  opcua.json: |
+    {
+      "url": "opc.tcp://192.168.213.10:4511/AxiUaServer",
+      "policy": "auto",
+      "mode": "auto",
+      "certfile": "./host/conf/cert.pem",
+      "keyfile": "./host/conf/key.pem",
+      "gencert": false,
+      "appuri": "urn:gopcua:client",
+      "auth": "Anonymous",
+      "user": "",
+      "password": "",
+      "dialTimeout": 0,
+      "sessionTimeout": 1200000,
+      "requestTimeout": 10000,
+      "numValues": 0,
+      "submode": "",
+      "subscribeInterval": 1500,
+      "subscribeon": false,
+      "modetags": 2,
+      "debug": false,
+      "subscriptionLastTime": "",
+      "subscriptionPrevTime": ""
+    }
+
+---
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-svd-opcua-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-svd
+      component: opcua
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: digit-svd
+        component: opcua
+    spec:
+      serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
+      imagePullSecrets:
+        - name: digit-dgepu-secret
+      initContainers:
+      - name: copy-config
+        image: 85.141.97.224:443/busybox:latest
+        command: ['sh', '-c', 'mkdir -p /svd/host/conf && cp /svd/conf/opcua.json /svd/host/conf/']
+        volumeMounts:
+          - name: opcua-config
+            mountPath: /svd/conf
+          - name: digit-svd-opcua-data-rsc
+            mountPath: /svd/host
+      containers:
+      - name: opcua
+        namespace: digit
+        image: 85.141.97.224:443/svd_opcua:4.8.2.65k
+        # imagePullPolicy: Always
+        ports:
+        - containerPort: 10103
+        env:
+        - name: SVDCode
+          value: "opcua"
+        - name: SVDControl
+          value: "digit-svd-control-service:11000"
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace  # Автоматическое указание текущего namespace
+        volumeMounts:
+          - name: digit-svd-opcua-data-rsc
+            mountPath: /svd/host
+          - name: opcua-config
+            mountPath: /svd/conf
+      volumes:
+      - name: digit-svd-opcua-data-rsc
+        persistentVolumeClaim:
+          claimName: digit-svd-opcua-data-pvc
+      - name: opcua-config
+        configMap:
+          name: digit-svd-opcua-config

@@ -1,0 +1,17 @@
+apiVersion: deckhouse.io/v1alpha1
+kind: ModuleConfig
+metadata:
+  name: metallb
+spec:
+  enabled: true
+  settings:
+    addressPools:
+    - addresses:
+      - 172.21.100.57/32
+      - 172.21.100.41/32
+      name: frontend-pool
+      protocol: layer2
+    speaker:
+      nodeSelector:
+        node-role.kubernetes.io/control-plane: ""
+  version: 2

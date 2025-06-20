@@ -1,0 +1,47 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: digit-postgres-exporter
+  labels:
+    prometheus.deckhouse.io/custom-target: digit-postgres-exporter
+  annotations:
+    prometheus.deckhouse.io/port: "9187"
+    # prometheus.deckhouse.io/path: "/pros/rest/prometheus/metrics"
+spec:
+  selector:
+    app: digit-postgres-exporter
+  ports:
+    - name: metrics
+      port: 9187
+      targetPort: 9187
+  type: ClusterIP
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-postgres-exporter
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-postgres-exporter
+  template:
+    metadata:
+      labels:
+        app: digit-postgres-exporter
+    spec:
+      imagePullSecrets:
+        - name: digit-dgepu-secret
+      containers:
+      - name: digit-postgres-exporter
+        image: 85.141.97.224:443/prometheuscommunity/postgres-exporter:latest
+        ports:
+        - containerPort: 9187
+          name: metrics
+        env:
+        - name: DATA_SOURCE_NAME
+          value: "postgresql://postgres:postgres@digit-postgres-headless:5432/meas_params?sslmode=disable"

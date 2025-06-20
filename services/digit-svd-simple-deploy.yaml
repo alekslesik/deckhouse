@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: digit-svd-simple-data-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: localpath
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: digit-svd-simple-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: digit-svd
+      component: simple
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: digit-svd
+        component: simple
+    spec:
+      serviceAccountName: digit-svd-sa  # Назначаем новый ServiceAccount
+      imagePullSecrets:
+        - name: digit-dgepu-secret
+      containers:
+      - name: simple
+        # namespace: digit
+        image: 85.141.97.224:443/svd_simple:4.8.4.2k
+        # imagePullPolicy: Always
+        ports:
+        - containerPort: 10101
+        env:
+        - name: SVDCode
+          value: "simple"
+        - name: SVDControl
+          value: "digit-svd-control-service:11000"
+        - name: TZ
+          value: "Europe/Moscow"
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace  # Автоматическое указание текущего namespace
+        volumeMounts:
+          - name: digit-svd-simple-data-rsc
+            mountPath: /svd/host
+      volumes:
+      - name: digit-svd-simple-data-rsc
+        persistentVolumeClaim:
+          claimName: digit-svd-simple-data-pvc
+        
