@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: digit-dmz-shared-lb
+  namespace: digit
   annotations:
     metallb.universe.tf/ip-allocated-from-pool: frontend-pool
 spec:

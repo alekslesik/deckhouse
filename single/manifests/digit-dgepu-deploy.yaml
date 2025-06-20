@@ -1,17 +1,3 @@
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: digit-dgepu-data-pvc
-# spec:
-#   accessModes:
-#     - ReadWriteMany
-#   storageClassName: replicated-storage-class
-#   resources:
-#     requests:
-#       storage: 20Gi
-
-# ---
-
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -39,12 +25,13 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: digit-dgepu-data-localpath-pvc
+  namespace: digit
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
   resources:
     requests:
-      storage: 20Gi
+      storage: 50Gi
       
 ---
 
@@ -52,6 +39,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: digit-dgepu-config-localpath-pvc
+  namespace: digit
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: localpath
@@ -65,12 +53,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: digit-dgepu-service
+  namespace: digit
   labels:
     prometheus.deckhouse.io/custom-target: digit-dgepu-service
   annotations:
     prometheus.deckhouse.io/port: "8080"                      # По умолчанию будет использоваться порт сервиса с именем http-metrics или https-metrics.
     prometheus.deckhouse.io/path: "/pros/rest/prometheus/metrics"
-  # namespace: digit-svd
 spec:
   selector:
     app: digit-dgepu
@@ -85,7 +73,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: dgepu-config
-  # namespace: digit-svd
+  namespace: digit
 data:
   local.app.properties: |
     #cuba.webHostName=A7D1-WEB-01
@@ -437,6 +425,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: digit-dgepu-deployment
+  namespace: digit
 spec:
   replicas: 1
   selector:
