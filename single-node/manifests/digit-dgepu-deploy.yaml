@@ -451,7 +451,7 @@ spec:
           mountPath: /opt/app_home
       containers:
       - name: digit-dgepu
-        image: 85.141.97.224:443/digit_dgepu:load
+        image: 85.141.97.224:443/digit_dgepu:latest
         # imagePullPolicy: Always
         ports:
         - containerPort: 8080
