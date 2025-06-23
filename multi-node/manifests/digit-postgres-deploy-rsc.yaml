@@ -83,7 +83,7 @@ spec:
           mountPath: /docker-entrypoint-initdb.d
       containers:
       - name: digit-postgres
-        image: postgis/postgis:12-3.4
+        image: 85.141.97.224:443/postgis/postgis:12-3.4
         ports:
         - containerPort: 5432
         env:
