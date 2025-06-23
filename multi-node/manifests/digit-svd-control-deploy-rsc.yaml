@@ -59,7 +59,7 @@ data:
       "SVD": [
         {
           "code": "simple",
-          "image": "85.141.97.224:443/svd_simple:4.5.2.0",
+          "image": "85.141.97.224:443/svd_simple:4.10.4.3",
           "socket": "10101"
         }
       ]
@@ -88,7 +88,7 @@ spec:
         - name: digit-dgepu-secret
       containers:
       - name: digit-svd-control
-        image: 85.141.97.224:443/svd_control:kuber
+        image: 85.141.97.224:443/svd_control:4.10
         # imagePullPolicy: Always
         ports:
         - containerPort: 11000
