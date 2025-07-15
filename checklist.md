@@ -1,126 +1,70 @@
-### Чек-лист для проверки работоспособности приложения в Kubernetes
+### Чек-лист проверки работоспособности сервисов DIGIT
 
-#### 1. **Проверка подов (Pods)**
-```bash
-# Проверить статус всех подов в namespace
-kubectl get pods -n digit
+#### Проверка через ArgoCD
 
-# Проверить логи конкретного пода (например, digit-dgepu-deployment)
-kubectl logs -n digit <pod_name> -c digit-dgepu
+| № | Мероприятие | Инструкция | Ожидаемый результат |
+|---|------------|------------|---------------------|
+| 1 | Проверить общее состояние проекта | В интерфейсе ArgoCD проверить статус приложений (cassandra, postgres, dgepu, svd-control, svd-simple) | **Healthy** |
+| 2 | Проверить статус синхронизации с манифестами | В интерфейсе ArgoCD проверить статус синхронизации для каждого приложения | **Sync OK** |
+| 3 | Проверить синхронизацию с манифестами | Нажать кнопку **SYNC** для каждого приложения | Успешная синхронизация |
+| 4 | Проверить пересоздание подов | Удалить поды через интерфейс ArgoCD | Поды автоматически пересоздаются |
+| 5 | Проверить события | Проверить вкладку **EVENTS** для каждого приложения | Нет ошибок |
+| 6 | Проверить логи | Проверить вкладку **LOGS** для основных контейнеров | Нет критических ошибок |
 
-# Проверить логи init-контейнера (если есть)
-kubectl logs -n digit <pod_name> -c copy-config
+#### Проверка через Kubernetes консоль
 
-# Проверить события, связанные с подами
-kubectl describe pod -n digit <pod_name>
-```
+**1. Общие проверки**
 
-#### 2. **Проверка развертывания (Deployment)**
-```bash
-# Проверить статус deployment
-kubectl get deployment -n digit digit-dgepu-deployment
+| № | Мероприятие | Команда | Ожидаемый результат |
+|---|------------|---------|---------------------|
+| 1 | Проверить статус всех подов | `kubectl get pods -n digit` | Все поды в статусе **Running** |
+| 2 | Проверить статус PersistentVolumeClaims | `kubectl get pvc -n digit` | Все PVC в статусе **Bound** |
+| 3 | Проверить сервисы | `kubectl get svc -n digit` | Все сервисы доступны с правильными портами |
 
-# Проверить историю изменений deployment
-kubectl rollout history deployment -n digit digit-dgepu-deployment
+**2. Проверка Cassandra**
 
-# Проверить детали deployment
-kubectl describe deployment -n digit digit-dgepu-deployment
-```
+| № | Мероприятие | Команда | Ожидаемый результат |
+|---|------------|---------|---------------------|
+| 1 | Проверить логи | `kubectl logs -n digit digit-cassandra-statefulset-0` | Нет ошибок, сообщения о успешном старте |
+| 2 | Проверить статус ноды | `kubectl exec -n digit digit-cassandra-statefulset-0 -- nodetool status` | Нода в статусе **UN** |
+| 3 | Проверить соединение CQL | `kubectl exec -n digit digit-cassandra-statefulset-0 -- cqlsh -u cassandra -p cassandra -e "DESCRIBE KEYSPACES"` | Список keyspaces без ошибок |
+| 4 | Проверить порты | `kubectl exec -n digit digit-cassandra-statefulset-0 -- netstat -tuln` | Прослушиваются порты 7000, 7001, 7199, 9042 |
 
-#### 3. **Проверка StatefulSet**
-```bash
-# Проверить статус StatefulSet
-kubectl get statefulset -n digit digit-cassandra-statefulset
+**3. Проверка PostgreSQL**
 
-# Проверить историю изменений StatefulSet
-kubectl rollout history statefulset -n digit digit-cassandra-statefulset
+| № | Мероприятие | Команда | Ожидаемый результат |
+|---|------------|---------|---------------------|
+| 1 | Проверить логи | `kubectl logs -n digit digit-postgres-deployment-<hash>` | Нет ошибок, сообщения о успешном старте |
+| 2 | Проверить доступность | `kubectl exec -n digit digit-postgres-deployment-<hash> -- pg_isready -U postgres` | Ответ: `postgres:5432 - accepting connections` |
+| 3 | Проверить базы данных | `kubectl exec -n digit digit-postgres-deployment-<hash> -- psql -U postgres -c "\l"` | Список баз данных (ascug, pros, meas_params и др.) |
+| 4 | Проверить порт | `kubectl exec -n digit digit-postgres-deployment-<hash> -- netstat -tuln` | Прослушивается порт 5432 |
 
-# Проверить детали StatefulSet
-kubectl describe statefulset -n digit digit-cassandra-statefulset
-```
-#### 4. **Проверка состояния Cassandra**
-```bash
-# Проверить статус ноды Cassandra (через nodetool)
-kubectl exec -n digit digit-cassandra-statefulset-0 -c digit-cassandra -- nodetool -u cassandra -pw cassandra status
+**4. Проверка DGEPU**
 
-# Проверить информацию о кластере
-kubectl exec -n digit digit-cassandra-statefulset-0 -c digit-cassandra -- nodetool -u cassandra -pw cassandra describecluster
+| № | Мероприятие | Команда | Ожидаемый результат |
+|---|------------|---------|---------------------|
+| 1 | Проверить логи | `kubectl logs -n digit digit-dgepu-deployment-<hash>` | Нет ошибок, сообщения о успешном старте приложения |
+| 2 | Проверить доступность API | `kubectl exec -n digit -it digit-dgepu-deployment-<hash> -- curl -I http://localhost:8080/pros/` | HTTP 200 OK |
+| 3 | Проверить порт | `kubectl exec -n digit digit-dgepu-deployment-<hash> -- netstat -tuln` | Прослушивается порт 8080 |
 
-# Проверить доступность CQL
-kubectl exec -n digit digit-cassandra-statefulset-0 -c digit-cassandra -- cqlsh -u cassandra -p cassandra -e "DESCRIBE KEYSPACES"
-```
+**5. Проверка SVD Control**
 
-#### 5. **Проверка сервиса (Service)**
-```bash
-# Проверить статус сервиса
-kubectl get service -n digit digit-dgepu-service
+| № | Мероприятие | Команда | Ожидаемый результат |
+|---|------------|---------|---------------------|
+| 1 | Проверить логи | `kubectl logs -n digit digit-svd-control-deployment-<hash>` | Нет ошибок, сообщения о подключении к SVD simple |
+| 2 | Проверить порт UDP | `kubectl exec -n digit digit-svd-control-deployment-<hash> -- netstat -uln` | Прослушивается порт 11000 |
 
-# Проверить детали сервиса
-kubectl describe service -n digit digit-dgepu-service
-```
+**6. Проверка SVD Simple**
 
-#### 6. **Проверка Ingress**
-```bash
-# Проверить статус Ingress
-kubectl get ingress -n digit digit-dgepu-ingress
+| № | Мероприятие | Команда | Ожидаемый результат |
+|---|------------|---------|---------------------|
+| 1 | Проверить логи | `kubectl logs -n digit digit-svd-simple-deployment-<hash>` | Нет ошибок, сообщения о подключении к SVD Control |
+| 2 | Проверить порт | `kubectl exec -n digit digit-svd-simple-deployment-<hash> -- netstat -uln` | Прослушивается порт 10101 |
 
-# Проверить детали Ingress
-kubectl describe ingress -n digit digit-dgepu-ingress
-```
+**7. Проверка взаимодействия сервисов**
 
-#### 7. **Проверка PersistentVolumeClaim (PVC)**
-```bash
-# Проверить статус PVC
-kubectl get pvc -n digit
-
-# Проверить детали PVC
-kubectl describe pvc -n digit digit-dgepu-data-localpath-pvc
-kubectl describe pvc -n digit digit-dgepu-config-localpath-pvc
-```
-
-#### 8. **Проверка ConfigMap**
-```bash
-# Проверить ConfigMap
-kubectl get configmap -n digit dgepu-config
-
-# Проверить содержимое ConfigMap
-kubectl describe configmap -n digit dgepu-config
-```
-
-#### 9. **Проверка мониторинга (Grafana Dashboard)**
-```bash
-# Проверить доступность метрик в Prometheus
-kubectl port-forward -n monitoring svc/prometheus-operated 9090
-# Затем открыть в браузере http://localhost:9090 и проверить метрики для digit-dgepu-service
-```
-
-#### 10. **Проверка сетевой доступности**
-```bash
-# Проверить доступность сервиса изнутри кластера
-kubectl exec -n digit <pod_name> -- curl http://digit-dgepu-service:80/pros/
-
-# Проверить доступность через Ingress (если настроен DNS или hosts)
-curl http://dgepu.172-21-100-22.sslip.io/pros/
-```
-
-#### 11. **Проверка ресурсов**
-```bash
-# Проверить использование ресурсов подами
-kubectl top pods -n digit
-
-# Проверить использование ресурсов нодами
-kubectl top nodes
-```
-
-#### 12. **Проверка событий кластера**
-```bash
-# Просмотреть события в namespace
-kubectl get events -n digit --sort-by=.metadata.creationTimestamp
-```
-
-#### 13. **Проверка автоматического восстановления**
-```bash
-# Удалить под и проверить его пересоздание
-kubectl delete pod -n digit <pod_name>
-kubectl get pods -n digit -w  # Отслеживать статус
-```
+| № | Мероприятие | Команда | Ожидаемый результат |
+|---|------------|---------|---------------------|
+| 1 | Проверить подключение DGEPU к PostgreSQL | `kubectl exec -n digit digit-dgepu-deployment-<hash> -- curl -I http://digit-postgres-headless:5432` | Доступность порта |
+| 2 | Проверить подключение DGEPU к Cassandra | `kubectl exec -n digit digit-dgepu-deployment-<hash> -- curl -I http://digit-cassandra-service:9042` | Доступность порта |
+| 3 | Проверить подключение SVD Simple к SVD Control | `kubectl exec -n digit digit-svd-simple-deployment-<hash> -- nc -zv digit-svd-control-service 11000` | Успешное подключение |
