@@ -3078,10 +3078,10 @@ spec:
         - name: TZ
           value: Europe/Moscow
         - name: CASSANDRA_SEEDS
-          value: "digit-cassandra-statefulset-0.digit-cassandra-service.default.svc.cluster.local,digit-cassandra-statefulset-1.digit-cassandra-service.default.svc.cluster.local,digit-cassandra-statefulset-2.digit-cassandra-service.default.svc.cluster.local"
+          value: "digit-cassandra-statefulset-0.digit-cassandra-service.digit.svc.cluster.local,digit-cassandra-statefulset-1.digit-cassandra-service.digit.svc.cluster.local,digit-cassandra-statefulset-2.digit-cassandra-service.digit.svc.cluster.local"
         - name: CASSANDRA_CLUSTER_NAME
           value: "K8Demo"
-        - name: CASS_MULTI_OR_SINGLE
+        - name: CASS_MULTI_OR_SINGLE 
           value: "multinode"
         - name: CASS_CLUSTER_OR_SINGLE
           value: "cluster"
