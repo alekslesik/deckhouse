@@ -1,0 +1,22 @@
+# Сервис DMZ (digit-dmz-shared-lb.yaml)
+apiVersion: v1
+kind: Service
+metadata:
+  name: digit-dmz-shared-lb
+  namespace: digit
+spec:
+  type: LoadBalancer
+  loadBalancerIP: "172.21.133.41"
+  loadBalancerClass: "network.deckhouse.io/shared-lb"
+  externalTrafficPolicy: Cluster
+  selector:
+    app: digit-svd
+  ports:
+    - name: app1-port
+      port: 10101
+      targetPort: 10101
+      protocol: TCP
+    - name: app2-port
+      port: 10102
+      targetPort: 10102
+      protocol: TCP
