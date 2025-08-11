@@ -1,0 +1,12 @@
+apiVersion: network.deckhouse.io/v1alpha1
+kind: MetalLoadBalancerClass
+metadata:
+  name: shared-lb
+spec:
+  addressPool:
+    - 172.21.133.41/32  # Для DMZ
+    - 172.21.133.57/32  # Для KSPD
+  isDefault: true
+  nodeSelector:
+    node-role.kubernetes.io/control-plane: ""  # Работает на всех control-plane узлах
+  type: L2
