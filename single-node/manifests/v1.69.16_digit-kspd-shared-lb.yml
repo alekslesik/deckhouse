@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: digit-kspd-shared-lb
+  namespace: digit
+spec:
+  type: LoadBalancer
+  loadBalancerIP: "172.21.133.57"
+  loadBalancerClass: "network.deckhouse.io/shared-lb"
+  ports:
+  - name: http-digit
+    nodePort: 31330
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: digit-dgepu
