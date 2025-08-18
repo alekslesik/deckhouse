@@ -46,7 +46,6 @@ spec:
     type: Recreate
   template:
     metadata:
-      namespace: digit
       labels:
         app: digit-bionic-dotnet
     spec:
