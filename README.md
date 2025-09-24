@@ -9,7 +9,7 @@ kubectl create secret docker-registry digit-dgepu-secret \
   --docker-email=alekslesik@gmail.com
   
   
-  watch -n 1 "kubectl get po -o wide | grep -E 'digit-cassandra-deployment|digit-cassandra-statefulset|digit-dgepu-deployment|digit-postgres-deployment|digit-svd-simple-deployment' | sed 's/-[a-z0-9]*$//' | uniq"
+watch -n 1 "kubectl get po -o wide | grep -E 'digit-cassandra-deployment|digit-cassandra-statefulset|digit-dgepu-deployment|digit-postgres-deployment|digit-svd-simple-deployment' | sed 's/-[a-z0-9]*$//' | uniq"
 
 watch -c kubectl exec -n d8-sds-replicated-volume deploy/linstor-controller -- linstor r l
 
@@ -18,16 +18,17 @@ kubectl cp digit-dgepu-deployment-744bdfbc6-k85g5:opt/app_home/logs/log.log ./lo
 tar -czf log.tar.gz log.log
 
 # Restore
-kubectl -n digit cp /root/backup/meas_params.backup digit-postgres-deployment-fc6f77bb6-wz9cg:/var/lib/postgresql/data/meas_params.backup;
-kubectl  -n digit exec -it digit-postgres-deployment-fc6f77bb6-wz9cg -- /bin/bash -c "pg_restore -U postgres -d meas_params /var/lib/postgresql/data/meas_params.backup";
-kubectl  -n digit cp /root/backup/meas_params.backup digit-postgres-deployment-fc6f77bb6-wz9cg:/var/lib/postgresql/data/pros.backup;
-kubectl  -n digitl exec -it digit-postgres-deployment-fc6f77bb6-wz9cg -- /bin/bash -c "pg_restore -U postgres -d pros /var/lib/postgresql/data/pros.backup";
+kubectl -n digit cp ./meas_params.backup digit-postgres-deployment-76d4844758-cgw:/var/lib/postgresql/data/meas_params.backup;
+kubectl  -n digit exec -it digit-postgres-deployment-76d4844758-cgwsd -- /bin/bash -c "pg_restore -U postgres -d meas_params /var/lib/postgresql/data/meas_params.backup";
+kubectl  -n digit cp ./meas_params.backup digit-postgres-deployment-76d4844758-cgwsd:/var/lib/postgresql/data/pros.backup;
+kubectl  -n digitl exec -it digit-postgres-deployment-76d4844758-cgwsd -- /bin/bash -c "pg_restore -U postgres -d pros /var/lib/postgresql/data/pros.backup";
 
 # Dump
-kubectl exec -it digit-postgres-deployment-fc6f77bb6-wz9cg -- /bin/bash -c "pg_dump -U postgres -Fc meas_params > /var/lib/postgresql/data/meas_params.backup";
-kubectl cp digit-postgres-deployment-fc6f77bb6-wz9cg:/var/lib/postgresql/data/meas_params.backup /home/zyfra/backup/meas_params.backup;
-kubectl exec -it digit-postgres-deployment-fc6f77bb6-wz9cg -- /bin/bash -c "pg_dump -U postgres -Fc pros > /var/lib/postgresql/data/pros.backup";
-kubectl cp digit-postgres-deployment-fc6f77bb6-wz9cg:/var/lib/postgresql/data/pros.backup /home/zyfra/backup/pros.backup;
+kubectl -n digit exec -it digit-postgres-deployment-76d4844758-cgwsd -- /bin/bash -c "pg_dump -U postgres -Fc meas_params > /var/lib/postgresql/data/meas_params.backup";
+kubectl -n digit cp digit-postgres-deployment-76d4844758-cgwsd:/var/lib/postgresql/data/meas_params.backup ./meas_params.backup;
+
+kubectl -n digit  exec -it digit-postgres-deployment-76d4844758-cgwsd -- /bin/bash -c "pg_dump -U postgres -Fc pros > /var/lib/postgresql/data/pros.backup";
+kubectl -n digit cp digit-postgres-deployment-76d4844758-cgwsd:/var/lib/postgresql/data/pros.backup ./pros.backup;
 
 
 vlSLTvazSgVE6fhP
