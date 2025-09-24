@@ -308,6 +308,7 @@ spec:
       labels:
         app: digit-svd-control
     spec:
+      serviceAccountName: digit-svd-sa
       imagePullSecrets:
         - name: digit-dgepu-secret
       containers:
